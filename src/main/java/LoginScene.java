@@ -18,13 +18,20 @@ public class LoginScene {
         password.setPromptText("Password");
         Button loginBtn = new Button("Log In");
         Button signUpBtn = new Button ("Sign Up");
+        Button createYourOwnQuiz = new Button ("Create your own quiz");
 
         // create the if statement to check if the login credentials can be found in the db
         // take them to the signup scene if their login info is not found in the db
         signUpBtn.setOnAction(event -> {
             stage.setScene(SignUpScene.getScene(stage));
         });
-        VBox s1Root = new VBox(10, title, userName, password, loginBtn, signUpBtn);
+
+        //for testing purposes
+        createYourOwnQuiz.setOnAction(event -> {
+            stage.setScene(createYourOwenQuiz.getScene(stage));
+        });
+        //get rid of create YourOwnQuiz when home is made
+        VBox s1Root = new VBox(10, title, userName, password, loginBtn, signUpBtn, createYourOwnQuiz);
         s1Root.setAlignment(Pos.CENTER);
         s1Root.setPadding(new Insets(30));
 
