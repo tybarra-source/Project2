@@ -23,6 +23,9 @@ public class Quiz {
 
     /**
      * Take each question in the quiz
+     * * If you would prefer answer to answer one question at a time:
+     *          -Change method signature to take index and an ArrayList<Boolean>
+     *          -Answer the question at the index
      * @param answers An ArrayList of Boolean ArrayLists; Each inner arraylist represents the
      *                answers given for the question at its index.
      * @return Total score for quiz
@@ -63,7 +66,7 @@ public class Quiz {
 
 
         /**
-         *
+         * -Save the score in some way for final score
          * @param answers A 0 or 1 for every possible answer to indicate whether it's input as an answer
          *                (can be changed based on implementation for multiple answers)
          * @return score for question
