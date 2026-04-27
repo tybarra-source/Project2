@@ -29,7 +29,7 @@ public class WelcomeAdmin extends Application {
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(30));
 
-        //hello world
+
 
         Scene scene = new Scene(root, 400, 300);
         editQ1.setOnAction(e ->{
