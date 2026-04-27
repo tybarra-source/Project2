@@ -1,12 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Quiz {
-
-    public Quiz(String id){
-        //placeholder constructor;
-    }
-
     private ArrayList<Question> questions;
+
+    public Quiz(){
+        questions = new ArrayList<>();
+    }
 
     public int getQuestionCount(){
         return questions.size();
@@ -17,11 +17,18 @@ public class Quiz {
         return questions;
     }
 
+    private void addQuestion(Question.Type type, String prompt, HashMap<String, Boolean> answers){
+        questions.add(new Question(type, prompt, answers));
+    }
+
     /**
      * Take each question in the quiz
      * @return Total score for quiz
      */
     public float take(){
+        for(Question q : questions){
+
+        }
         return 0;
     }
 
@@ -30,7 +37,24 @@ public class Quiz {
     /*Questions can also have their own score instead of all being worth an equal amount, if wanted,
     in which case implementation would be slightly different*/
 
-        private String type; //Use enum, decides whether a question is multiple answer or single answer
+        enum Type{
+            SINGLE_CORRECT,
+            MULTIPLE_CORRECT,
+            MULTIPLE_ANSWER
+        }
+
+        private Type type;
+        private String prompt;
+        private HashMap<String, Boolean> answers;
+
+        Question(Type type, String prompt, HashMap<String, Boolean> answers){
+            this.type = type;
+            this.prompt = prompt;
+            this.answers = answers;
+        }
+        /* Values in key should correspond to indices in answer, indicating whether each answer is
+        correct or incorrect. */
+
 
         /**
          *
@@ -42,5 +66,8 @@ public class Quiz {
             //Behavior should depend on type enum
             return 0;
         }
+
+
+
     }
 }
