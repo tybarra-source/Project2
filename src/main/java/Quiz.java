@@ -1,12 +1,12 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Quiz {
-
-    public Quiz(String id){
-        //placeholder constructor;
-    }
-
     private ArrayList<Question> questions;
+
+    public Quiz(){
+        questions = new ArrayList<>();
+    }
 
     public int getQuestionCount(){
         return questions.size();
@@ -17,30 +17,31 @@ public class Quiz {
         return questions;
     }
 
-    /**
-     * Take each question in the quiz
-     * @return Total score for quiz
-     */
-    public float take(){
-        return 0;
+    private void addQuestion(Question.Type type, String prompt, HashMap<String, Boolean> answers){
+        questions.add(new Question(type, prompt, answers));
     }
 
-    //Question class is tied to quiz and thus only accessible within quiz
-    public static class Question {
-    /*Questions can also have their own score instead of all being worth an equal amount, if wanted,
-    in which case implementation would be slightly different*/
-
-        private String type; //Use enum, decides whether a question is multiple answer or single answer
-
-        /**
-         *
-         * @param answers A 0 or 1 for every possible answer to indicate whether it's input as an answer
-         *                (can be changed based on implementation for multiple answers)
-         * @return score for question
-         */
-        public float Answer(boolean[] answers){
-            //Behavior should depend on type enum
-            return 0;
+    /**
+     * Take each question in the quiz and return the final score
+     * @param answers An ArrayList of Boolean ArrayLists; Each inner arraylist represents the
+     *                answers given for the question at its index.
+     * @return Total score for quiz
+     */
+    public float take(ArrayList<ArrayList<Integer>> answers){
+        float score = 0;
+        for(int i = 0; i < this.questions.size(); i++){
+            score += answer(i, answers.get(i));
         }
+        return score;
+    }
+
+    /**
+     * Answer an individual question by index, return score
+     * @param index
+     * @param answers Indexes marked as answers
+     * @return
+     */
+    public float answer(int index, ArrayList<Integer> answers){
+        return questions.get(index).answer(answers);
     }
 }
