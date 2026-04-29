@@ -19,22 +19,38 @@ public class LoginScene {
         Button loginBtn = new Button("Log In");
         Button signUpBtn = new Button ("Sign Up");
         Button createYourOwnQuiz = new Button ("Create your own quiz");
+        DataBaseManager db = new DataBaseManager();
 
         // create the if statement to check if the login credentials can be found in the db
         // take them to the signup scene if their login info is not found in the db
-        signUpBtn.setOnAction(event -> {
-            stage.setScene(SignUpScene.getScene(stage));
-        });
+        signUpBtn.setOnAction(e ->
+                stage.setScene(SceneFactory.create(SceneType.SIGNUP, stage))
+        );
 
         //for testing purposes
-        createYourOwnQuiz.setOnAction(event -> {
-            stage.setScene(createYourOwenQuiz.getScene(stage));
+        createYourOwnQuiz.setOnAction(e ->
+                stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage))
+        );
+        loginBtn.setOnAction(e -> {
+            String username = userName.getText();
+            String pass = password.getText();
+            if (username.isEmpty() || pass.isEmpty()) {
+                return;
+            }
+            if (db.validateUser(username, pass)) {
+                int userId = db.getUserId(username);
+                Session.currentUserId = userId;
+                Session.currentUsername = username;
+                stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage));
+
+            } else {
+                System.out.println("Invalid login");
+            }
         });
         //get rid of create YourOwnQuiz when home is made
         VBox s1Root = new VBox(10, title, userName, password, loginBtn, signUpBtn, createYourOwnQuiz);
         s1Root.setAlignment(Pos.CENTER);
         s1Root.setPadding(new Insets(30));
-
         return new Scene(s1Root, 400, 300);
     }
 }

@@ -17,10 +17,18 @@ public class SignUpScene {
         password.setPromptText("Password");
         Button loginBtn = new Button("Back to Log In");
         Button signUpBtn = new Button("Sign Up");
-
-        loginBtn.setOnAction(event -> {
-            stage.setScene(LoginScene.getScene(stage));
+        DataBaseManager db= new DataBaseManager();
+        signUpBtn.setOnAction(e -> {
+            String username = userName.getText();
+            String pass = password.getText();
+            if (!username.isEmpty() && !pass.isEmpty()) {
+                db.addUser(username, pass);
+                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage));
+            }
         });
+        loginBtn.setOnAction(e ->
+                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage))
+        );
         VBox s1Root = new VBox(10, title, userName, password, loginBtn, signUpBtn);
         s1Root.setAlignment(Pos.CENTER);
         s1Root.setPadding(new Insets(30));
