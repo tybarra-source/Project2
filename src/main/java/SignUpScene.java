@@ -25,10 +25,12 @@ public class SignUpScene {
         Label errorLabel = new Label("");
         Button loginBtn = new Button("Back to Log In");
         Button signUpBtn = new Button("Sign Up");
-
-        loginBtn.setOnAction(event -> {
-            stage.setScene(LoginScene.getScene(stage));
-        });
+        DataBaseManager db= new DataBaseManager();
+      
+        loginBtn.setOnAction(e ->
+                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage))
+        );
+        
         signUpBtn.setOnAction(event -> {
             if (!password.getText().equals(confirmPassword.getText())) {
                 errorLabel.setVisible(true);
@@ -44,6 +46,10 @@ public class SignUpScene {
                 errorLabel.setText("Password must be at least 8 characters!");
             } else {
                 errorLabel.setVisible(false);
+                String username = userName.getText();
+                String pass = password.getText();
+                db.addUser(username, pass);
+                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage));
                 // add username & pass to database
             }
         });
