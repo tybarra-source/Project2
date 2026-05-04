@@ -6,10 +6,7 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -23,14 +20,18 @@ public class SignUpScene {
         PasswordField confirmPassword = new PasswordField();
         confirmPassword.setPromptText("Confirm Password");
         Label errorLabel = new Label("");
+        RadioButton adminBtn = new RadioButton("Admin");
+        RadioButton userBtn = new RadioButton("User");
+        ToggleGroup role = new ToggleGroup();
+        userBtn.setToggleGroup(role);
+        adminBtn.setToggleGroup(role);
         Button loginBtn = new Button("Back to Log In");
         Button signUpBtn = new Button("Sign Up");
-        DataBaseManager db= new DataBaseManager();
       
         loginBtn.setOnAction(e ->
                 stage.setScene(SceneFactory.create(SceneType.LOGIN, stage))
         );
-        
+
         signUpBtn.setOnAction(event -> {
             if (!password.getText().equals(confirmPassword.getText())) {
                 errorLabel.setVisible(true);
@@ -46,14 +47,17 @@ public class SignUpScene {
                 errorLabel.setText("Password must be at least 8 characters!");
             } else {
                 errorLabel.setVisible(false);
-                String username = userName.getText();
-                String pass = password.getText();
-                db.addUser(username, pass);
+                DataBaseManager db = new DataBaseManager();
+                db.addUser(userName.getText(), password.getText());
                 stage.setScene(SceneFactory.create(SceneType.LOGIN, stage));
-                // add username & pass to database
             }
         });
-        VBox s1Root = new VBox(10, title, userName, password, confirmPassword, errorLabel, loginBtn, signUpBtn);
+            // this is me checking if admin is selected. i might delete this later but im not sure yet. keep for now
+            //else if (adminBtn.isSelected()) {
+            //    stage.setScene(WelcomeAdmin.getScene(stage));
+            //} else {
+            //    stage.setScene(LoginScene.getScene(stage));
+        VBox s1Root = new VBox(10, title, userName, password, confirmPassword, adminBtn, userBtn, errorLabel, loginBtn, signUpBtn);
         s1Root.setAlignment(Pos.CENTER);
         s1Root.setPadding(new Insets(30));
 
