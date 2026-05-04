@@ -1,5 +1,6 @@
 public enum SceneType {
     LOGIN ,
     SIGNUP,
-    CREATE_QUIZ
+    CREATE_QUIZ,
+    WELCOME_ADMIN
 }

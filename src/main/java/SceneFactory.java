@@ -1,22 +1,13 @@
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 public class SceneFactory {
 
-    public static Scene create(SceneType type, Stage stage) {
+    public static Scene create(SceneType type) {
         return switch (type) {
-            case LOGIN -> buildLoginScene(stage);
-            case SIGNUP -> buildSignupScene(stage);
-            case CREATE_QUIZ -> buildCreateQuizScene(stage);
+            case LOGIN -> new LoginController().buildScene();
+            case SIGNUP -> new SignUpController().buildScene();
+            case CREATE_QUIZ -> new CreateYourOwnQuizController().buildScene();
+            case WELCOME_ADMIN -> new WelcomeAdminController().buildScene();
         };
-    }
-    private static Scene buildLoginScene(Stage stage) {
-        return LoginScene.getScene(stage);
-    }
-    private static Scene buildSignupScene(Stage stage) {
-        return SignUpScene.getScene(stage);
-    }
-    private static Scene buildCreateQuizScene(Stage stage) {
-        return CreateYourOwnQuiz.getScene(stage);
     }
 }

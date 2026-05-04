@@ -10,8 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class SignUpScene {
-    public static Scene getScene(Stage stage) {
+public class SignUpController {
+    public Scene buildScene() {
         Label title = new Label("Sign Up");
         TextField userName = new TextField();
         userName.setPromptText("Username");
@@ -29,7 +29,7 @@ public class SignUpScene {
         Button signUpBtn = new Button("Sign Up");
       
         loginBtn.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage))
+                SceneManager.getInstance().navigateTo(SceneType.LOGIN)
         );
 
         signUpBtn.setOnAction(event -> {
@@ -49,18 +49,16 @@ public class SignUpScene {
                 errorLabel.setVisible(false);
                 DataBaseManager db = new DataBaseManager();
                 db.addUser(userName.getText(), password.getText());
-                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage));
+                if (adminBtn.isSelected()) {
+                    SceneManager.getInstance().navigateTo(SceneType.WELCOME_ADMIN);
+                } else {
+                    SceneManager.getInstance().navigateTo(SceneType.LOGIN);
+                }
             }
         });
-            // this is me checking if admin is selected. i might delete this later but im not sure yet. keep for now
-            //else if (adminBtn.isSelected()) {
-            //    stage.setScene(WelcomeAdmin.getScene(stage));
-            //} else {
-            //    stage.setScene(LoginScene.getScene(stage));
-        VBox s1Root = new VBox(10, title, userName, password, confirmPassword, adminBtn, userBtn, errorLabel, loginBtn, signUpBtn);
-        s1Root.setAlignment(Pos.CENTER);
-        s1Root.setPadding(new Insets(30));
-
-        return new Scene(s1Root, 400, 300);
+        VBox layout = new VBox(10, title, userName, password, confirmPassword, adminBtn, userBtn, errorLabel, loginBtn, signUpBtn);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(30));
+        return new Scene(layout, 400, 300);
     }
 }
