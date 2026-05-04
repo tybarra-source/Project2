@@ -131,7 +131,7 @@ public class CreateYourOwnQuiz {
             questions.clear();
         });
         backHome.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage))
+                stage.setScene(SceneFactory.create(SceneType.HOME, stage))
         );
         VBox root = new VBox(10, title, subjectBox, customSubject, multipleAnswers, questionField, row1, row2, row3, row4, addQuestion, finish, backHome, status);
         root.setAlignment(Pos.CENTER);

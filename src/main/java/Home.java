@@ -9,46 +9,34 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Home {
-
-
     public static Scene getScene(Stage stage) {
-        Label welcome = new Label("Welcome Admin");
-
-        Button editQ1 = new Button("Edit Quiz 1");
-        Button editQ2 = new Button("Edit Quiz 2");
-        Button editQ3 = new Button("Edit Quiz 3");
-        Button newQuiz = new Button("Create New Quiz");
-        Label result = new Label();
+        Label welcome = new Label("Welcome");
         VBox root = new VBox(12);
-        root.getChildren().addAll(welcome, editQ1, editQ2, editQ3, newQuiz, result);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(30));
+        DataBaseManager db = new DataBaseManager();
+        root.getChildren().add(welcome);
+        ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(Session.currentUserId);
+        for (DataBaseManager.Quiz quiz : quizzes) {
 
+            Button quizButton = new Button("Take: " + quiz.getTitle());
 
-        //Create method getscene in welcome admin
-        editQ1.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-        editQ2.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-        editQ3.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
+            quizButton.setOnAction(e -> {
+                Session.currentQuizId = quiz.getQuizId();
+                stage.setScene(TakeQuizScene.getScene(stage, quiz.getQuizId()));
+            });
 
+            root.getChildren().add(quizButton);
+        }
+
+        Button newQuiz = new Button("Create New Quiz");
         newQuiz.setOnAction(e ->
                 stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage))
         );
-        /**
-         *
-         * FIGURE OUT HOW TO LINK TO OTHER SCENES
-         * stage.setScene(SignUpScene.getScene(stage)); THIS IS TO LINK TO NEW SCENES, edit as u please
-         */
-
-
-        return new Scene(root, 400, 300);
-
+        root.getChildren().add(newQuiz);
+        return new Scene(root, 500, 500);
     }
-
 }
