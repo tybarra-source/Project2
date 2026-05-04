@@ -1,18 +1,13 @@
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Home {
-
-
-    public static Scene getScene(Stage stage) {
+public class HomeController {
+    public Scene buildScene() {
         Label welcome = new Label("Welcome Admin");
 
         Button editQ1 = new Button("Edit Quiz 1");
@@ -20,10 +15,10 @@ public class Home {
         Button editQ3 = new Button("Edit Quiz 3");
         Button newQuiz = new Button("Create New Quiz");
         Label result = new Label();
-        VBox root = new VBox(12);
-        root.getChildren().addAll(welcome, editQ1, editQ2, editQ3, newQuiz, result);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(30));
+        VBox layout = new VBox(12);
+        layout.getChildren().addAll(welcome, editQ1, editQ2, editQ3, newQuiz, result);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(30));
 
 
         //Create method getscene in welcome admin
@@ -38,16 +33,9 @@ public class Home {
         });
 
         newQuiz.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage))
+                SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
         );
-        /**
-         *
-         * FIGURE OUT HOW TO LINK TO OTHER SCENES
-         * stage.setScene(SignUpScene.getScene(stage)); THIS IS TO LINK TO NEW SCENES, edit as u please
-         */
-
-
-        return new Scene(root, 400, 300);
+        return new Scene(layout, 400, 300);
 
     }
 

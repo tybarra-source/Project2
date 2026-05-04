@@ -8,11 +8,11 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class CreateYourOwnQuiz {
+public class CreateYourOwnQuizController {
 
     static ArrayList<Question> questions = new ArrayList<>();
     static DataBaseManager db = new DataBaseManager();
-    public static Scene getScene(Stage stage) {
+    public Scene buildScene() {
         Label title = new Label("Create Your Own Quiz");
         ComboBox<String> subjectBox = new ComboBox<>();
         subjectBox.getItems().addAll("Math", "Physics", "Literature", "Music", "Custom");
@@ -131,11 +131,11 @@ public class CreateYourOwnQuiz {
             questions.clear();
         });
         backHome.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.LOGIN, stage))
+                SceneManager.getInstance().navigateTo(SceneType.LOGIN)
         );
-        VBox root = new VBox(10, title, subjectBox, customSubject, multipleAnswers, questionField, row1, row2, row3, row4, addQuestion, finish, backHome, status);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(20));
-        return new Scene(root, 450, 600);
+        VBox layout = new VBox(10, title, subjectBox, customSubject, multipleAnswers, questionField, row1, row2, row3, row4, addQuestion, finish, backHome, status);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(20));
+        return new Scene(layout, 450, 600);
     }
 }

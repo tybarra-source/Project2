@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CreateYourOwnQuizTest {
+public class CreateYourOwnQuizControllerTest {
     @Test
     void testNoCorrectAnswer() {
         ArrayList<Integer> correct = new ArrayList<>();
