@@ -9,10 +9,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-public class LoginScene {
-    public static Scene getScene(Stage stage) {
+public class LoginController {
+    public Scene buildScene() {
         Label title = new Label("Login");
         Label errorLabel = new Label("");
         TextField userName = new TextField();
@@ -23,15 +22,13 @@ public class LoginScene {
         Button signUpBtn = new Button ("Sign Up");
         Button createYourOwnQuiz = new Button ("Create your own quiz");
 
-        // create the if statement to check if the login credentials can be found in the db
-        // take them to the signup scene if their login info is not found in the db
         signUpBtn.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.SIGNUP, stage))
+                SceneManager.getInstance().navigateTo(SceneType.SIGNUP)
         );
 
         //for testing purposes
         createYourOwnQuiz.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage))
+                SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
         );
         loginBtn.setOnAction(event -> {
             if (userName.getText().isEmpty() || password.getText().isEmpty()) {
@@ -45,17 +42,16 @@ public class LoginScene {
                     int userId = db.getUserId(userName.getText());
                     Session.currentUserId = userId;
                     Session.currentUsername = userName.getText();
-                    stage.setScene(SceneFactory.create(SceneType.HOME, stage));
+                    SceneManager.getInstance().navigateTo(SceneType.HOME);
                 } else {
                     errorLabel.setVisible(true);
                     errorLabel.setText("Username or password not found. Please sign up!");
                 }
             }
         });
-        //get rid of create YourOwnQuiz when home is made
-        VBox s1Root = new VBox(10, title, userName, password, errorLabel, loginBtn, signUpBtn, createYourOwnQuiz);
-        s1Root.setAlignment(Pos.CENTER);
-        s1Root.setPadding(new Insets(30));
-        return new Scene(s1Root, 400, 300);
+        VBox layout = new VBox(10, title, userName, password, errorLabel, loginBtn, signUpBtn, createYourOwnQuiz);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(30));
+        return new Scene(layout, 400, 300);
     }
 }

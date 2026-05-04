@@ -2,23 +2,22 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
-public class TakeQuizScene {
-    public static Scene getScene(Stage stage, int quizId) {
+public class TakeQuizController {
+    public Scene buildScene( int quizId) {
         DataBaseManager db = new DataBaseManager();
         ArrayList<Question> questions = db.getQuestionsForQuiz(quizId);
-        VBox root = new VBox(15);
-        root.setPadding(new Insets(20));
-        root.setAlignment(Pos.CENTER);
+        VBox layout = new VBox(15);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.CENTER);
 
         if (questions.isEmpty()) {
-            root.getChildren().add(new Label("No questions in this Quiz"));
-            return new Scene(root, 400, 300);
+            layout.getChildren().add(new Label("No questions in this Quiz"));
+            return new Scene(layout, 400, 300);
         }
         final int[] currentIndex = {0};
         final int[] score = {0};
@@ -77,20 +76,19 @@ public class TakeQuizScene {
                 Label finalScore = new Label("Score: " + score[0] + " / " + questions.size());
                 Button homeButton = new Button("Back Home");
                 homeButton.setOnAction(home ->
-                        stage.setScene(SceneFactory.create(SceneType.HOME, stage))
+                        SceneManager.getInstance().navigateTo(SceneType.HOME)
                 );
-                finishRoot.getChildren().addAll(finished, finalScore, homeButton);
-                stage.setScene(new Scene(finishRoot, 400, 300));
+
             } else {
                 currentIndex[0]++;
                 loadQuestion.run();
             }
         });
         backButton.setOnAction(e ->
-                stage.setScene(SceneFactory.create(SceneType.HOME, stage))
-        );
-        root.getChildren().addAll(title, questionLabel, a, b, c, d, nextButton, backButton, status);
+                SceneManager.getInstance().navigateTo(SceneType.HOME)
+                );
+        layout.getChildren().addAll(title, questionLabel, a, b, c, d, nextButton, backButton, status);
         loadQuestion.run();
-        return new Scene(root, 500, 450);
+        return new Scene(layout, 500, 450);
     }
 }
