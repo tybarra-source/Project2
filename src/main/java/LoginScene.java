@@ -45,7 +45,7 @@ public class LoginScene {
                     int userId = db.getUserId(userName.getText());
                     Session.currentUserId = userId;
                     Session.currentUsername = userName.getText();
-                    stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage));
+                    stage.setScene(SceneFactory.create(SceneType.HOME, stage));
                 } else {
                     errorLabel.setVisible(true);
                     errorLabel.setText("Username or password not found. Please sign up!");
