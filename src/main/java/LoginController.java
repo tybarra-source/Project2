@@ -9,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class LoginController {
     public Scene buildScene() {
@@ -43,7 +42,7 @@ public class LoginController {
                     int userId = db.getUserId(userName.getText());
                     Session.currentUserId = userId;
                     Session.currentUsername = userName.getText();
-                    SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ);
+                    SceneManager.getInstance().navigateTo(SceneType.HOME);
                 } else {
                     errorLabel.setVisible(true);
                     errorLabel.setText("Username or password not found. Please sign up!");

@@ -50,7 +50,7 @@ public class SignUpController {
                 DataBaseManager db = new DataBaseManager();
                 db.addUser(userName.getText(), password.getText());
                 if (adminBtn.isSelected()) {
-                    SceneManager.getInstance().navigateTo(SceneType.WELCOME_ADMIN);
+                    SceneManager.getInstance().navigateTo(SceneType.ADMIN_HOME);
                 } else {
                     SceneManager.getInstance().navigateTo(SceneType.LOGIN);
                 }

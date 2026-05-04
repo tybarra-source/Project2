@@ -6,9 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class WelcomeAdminController {
+public class HomeController {
     public Scene buildScene() {
         Label welcome = new Label("Welcome Admin");
+
         Button editQ1 = new Button("Edit Quiz 1");
         Button editQ2 = new Button("Edit Quiz 2");
         Button editQ3 = new Button("Edit Quiz 3");
@@ -31,16 +32,9 @@ public class WelcomeAdminController {
             result.setText("Goes to the edit mode on that quiz");
         });
 
-        newQuiz.setOnAction(e ->{
-            result.setText("Creates new quiz in edit mode");
-        });
-        /**
-         *
-         * FIGURE OUT HOW TO LINK TO OTHER SCENES
-         * stage.setScene(SignUpScene.getScene(stage)); THIS IS TO LINK TO NEW SCENES, edit as u please
-         */
-
-
+        newQuiz.setOnAction(e ->
+                SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
+        );
         return new Scene(layout, 400, 300);
 
     }

@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-public class WelcomeAdminControllerTest {
+public class AdminHomeControllerControllerTest {
 
     @Test
     public void doesExist(){
-        WelcomeAdminController app = new WelcomeAdminController();
+        AdminHomeController app = new AdminHomeController();
         assertNotNull(app);
     }
 
