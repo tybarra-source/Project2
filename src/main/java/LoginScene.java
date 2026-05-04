@@ -7,13 +7,9 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 
 public class LoginScene {
     public static Scene getScene(Stage stage) {
@@ -26,42 +22,34 @@ public class LoginScene {
         Button loginBtn = new Button("Log In");
         Button signUpBtn = new Button ("Sign Up");
         Button createYourOwnQuiz = new Button ("Create your own quiz");
-        DataBaseManager db = new DataBaseManager();
 
         // create the if statement to check if the login credentials can be found in the db
         // take them to the signup scene if their login info is not found in the db
         signUpBtn.setOnAction(e ->
                 stage.setScene(SceneFactory.create(SceneType.SIGNUP, stage))
         );
-       
-        loginBtn.setOnAction(event -> {
-            if (userName.getText().isEmpty() || password.getText().isEmpty()) {
-                errorLabel.setVisible(true);
-                errorLabel.setText("Please complete all fields.");
-            } else {
-                errorLabel.setVisible(false);
-                //check if the username & pass is in the database
-            }
-        });
 
         //for testing purposes
         createYourOwnQuiz.setOnAction(e ->
                 stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage))
         );
-        loginBtn.setOnAction(e -> {
-            String username = userName.getText();
-            String pass = password.getText();
-            if (username.isEmpty() || pass.isEmpty()) {
-                return;
-            }
-            if (db.validateUser(username, pass)) {
-                int userId = db.getUserId(username);
-                Session.currentUserId = userId;
-                Session.currentUsername = username;
-                stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage));
-
+        loginBtn.setOnAction(event -> {
+            if (userName.getText().isEmpty() || password.getText().isEmpty()) {
+                errorLabel.setVisible(true);
+                errorLabel.setText("Please complete all fields.");
             } else {
-                System.out.println("Invalid login");
+                DataBaseManager db = new DataBaseManager();
+                boolean valid = db.validateUser(userName.getText(), password.getText());
+                if (valid) {
+                    errorLabel.setVisible(false);
+                    int userId = db.getUserId(userName.getText());
+                    Session.currentUserId = userId;
+                    Session.currentUsername = userName.getText();
+                    stage.setScene(SceneFactory.create(SceneType.CREATE_QUIZ, stage));
+                } else {
+                    errorLabel.setVisible(true);
+                    errorLabel.setText("Username or password not found. Please sign up!");
+                }
             }
         });
         //get rid of create YourOwnQuiz when home is made
