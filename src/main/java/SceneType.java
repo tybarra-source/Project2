@@ -3,5 +3,7 @@ public enum SceneType {
     SIGNUP,
     CREATE_QUIZ,
     ADMIN_HOME,
-    HOME
+    HOME,
+    TAKE_QUIZ,
+    FINISH;
 }

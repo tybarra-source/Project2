@@ -11,8 +11,7 @@ import java.util.ArrayList;
 public class CreateYourOwnQuizController {
 
     static ArrayList<Question> questions = new ArrayList<>();
-    static DataBaseManager db = new DataBaseManager();
-    public Scene buildScene() {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();    public Scene buildScene() {
         Label title = new Label("Create Your Own Quiz");
         ComboBox<String> subjectBox = new ComboBox<>();
         subjectBox.getItems().addAll("Math", "Physics", "Literature", "Music", "Custom");
@@ -131,7 +130,7 @@ public class CreateYourOwnQuizController {
             questions.clear();
         });
         backHome.setOnAction(e ->
-                SceneManager.getInstance().navigateTo(SceneType.LOGIN)
+                SceneManager.getInstance().navigateTo(SceneType.HOME)
         );
         VBox layout = new VBox(10, title, subjectBox, customSubject, multipleAnswers, questionField, row1, row2, row3, row4, addQuestion, finish, backHome, status);
         layout.setAlignment(Pos.CENTER);

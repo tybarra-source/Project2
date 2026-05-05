@@ -4,39 +4,33 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
+import java.util.ArrayList;
 
 public class HomeController {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
-        Label welcome = new Label("Welcome Admin");
-
-        Button editQ1 = new Button("Edit Quiz 1");
-        Button editQ2 = new Button("Edit Quiz 2");
-        Button editQ3 = new Button("Edit Quiz 3");
-        Button newQuiz = new Button("Create New Quiz");
-        Label result = new Label();
+        Label welcome = new Label("Welcome");
         VBox layout = new VBox(12);
-        layout.getChildren().addAll(welcome, editQ1, editQ2, editQ3, newQuiz, result);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
+        layout.getChildren().add(welcome);
+        ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(Session.currentUserId);
+        for (DataBaseManager.Quiz quiz : quizzes) {
+            Button quizButton = new Button("Take: " + quiz.getTitle());
+            quizButton.setOnAction(e -> {
+                Session.currentQuizId = quiz.getQuizId();
+                SceneManager.getInstance().navigateFresh(SceneType.TAKE_QUIZ);
+            });
+            layout.getChildren().add(quizButton);
+        }
 
-
-        //Create method getscene in welcome admin
-        editQ1.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-        editQ2.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-        editQ3.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-
+        Button newQuiz = new Button("Create New Quiz");
         newQuiz.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
         );
-        return new Scene(layout, 400, 300);
-
+        layout.getChildren().add(newQuiz);
+        return new
+                Scene(layout, 500, 500);
     }
-
 }
