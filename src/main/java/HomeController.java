@@ -8,19 +8,19 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 
 public class HomeController {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
         Label welcome = new Label("Welcome");
         VBox layout = new VBox(12);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
-        DataBaseManager db = new DataBaseManager();
         layout.getChildren().add(welcome);
         ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(Session.currentUserId);
         for (DataBaseManager.Quiz quiz : quizzes) {
             Button quizButton = new Button("Take: " + quiz.getTitle());
             quizButton.setOnAction(e -> {
                 Session.currentQuizId = quiz.getQuizId();
-                SceneManager.getInstance().navigateTo(SceneType.TAKE_QUIZ);
+                SceneManager.getInstance().navigateFresh(SceneType.TAKE_QUIZ);
             });
             layout.getChildren().add(quizButton);
         }

@@ -11,8 +11,7 @@ import java.util.ArrayList;
 public class CreateYourOwnQuizController {
 
     static ArrayList<Question> questions = new ArrayList<>();
-    static DataBaseManager db = new DataBaseManager();
-    public Scene buildScene() {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();    public Scene buildScene() {
         Label title = new Label("Create Your Own Quiz");
         ComboBox<String> subjectBox = new ComboBox<>();
         subjectBox.getItems().addAll("Math", "Physics", "Literature", "Music", "Custom");

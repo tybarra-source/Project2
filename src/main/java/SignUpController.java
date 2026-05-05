@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SignUpController {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
         Label title = new Label("Sign Up");
         TextField userName = new TextField();
@@ -47,7 +48,6 @@ public class SignUpController {
                 errorLabel.setText("Password must be at least 8 characters!");
             } else {
                 errorLabel.setVisible(false);
-                DataBaseManager db = new DataBaseManager();
                 db.addUser(userName.getText(), password.getText());
                 if (adminBtn.isSelected()) {
                     SceneManager.getInstance().navigateTo(SceneType.ADMIN_HOME);

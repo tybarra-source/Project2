@@ -10,6 +10,8 @@ public class SceneFactory {
             case ADMIN_HOME -> new AdminHomeController().buildScene();
             case HOME -> new HomeController().buildScene();
             case TAKE_QUIZ -> new TakeQuizController().buildScene(Session.currentQuizId);
+            case FINISH -> new FinishController().buildScene(Session.finalScore, Session.totalQuestions);
+
         };
     }
 }

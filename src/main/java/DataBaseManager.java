@@ -5,6 +5,7 @@ public class DataBaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:app.db";
     private Connection connection;
+    private static DataBaseManager instance;
     public DataBaseManager() {
         try {
             connection = DriverManager.getConnection(DB_URL);
@@ -14,6 +15,12 @@ public class DataBaseManager {
         } catch (SQLException e) {
             System.err.println("Connection failed: " + e.getMessage());
         }
+    }
+    public static DataBaseManager getInstance(){
+        if(instance==null) {
+            instance = new DataBaseManager();
+        }
+        return instance;
     }
     public void close() {
         try {
