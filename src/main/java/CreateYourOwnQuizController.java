@@ -6,7 +6,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class CreateYourOwnQuizController {
 
@@ -20,6 +24,45 @@ public class CreateYourOwnQuizController {
         customSubject.setPromptText("Or custom subject");
         customSubject.setVisible(false);
         customSubject.setManaged(false);
+
+
+
+        ComboBox<String> pickExisting = new ComboBox<>();
+
+        /*
+         * Entertainment: Cartoon & Animations : 32
+         * Entertainment: Japanese Anime & Manga : 31
+         * Science: Gadgets : 30
+         *
+         *
+         */
+        LinkedHashMap<String, Integer> topics= new LinkedHashMap<>();
+
+        topics.put("General Knowledge",9);
+        topics.put("Entertainment: Books", 10);
+        topics.put("Entertainment: Film", 11);
+        topics.put("Entertainment: Music", 12);
+        topics.put("Entertainment: Musicals & Theatres",13);
+        topics.put("Entertainment: Television", 14);
+        topics.put("Entertainment: Video Games", 15);
+        topics.put("Entertainment: Board Games", 16);
+        topics.put("Science & Nature", 17);
+        topics.put("Science: Computers", 18);
+        topics.put("Science: Mathematics", 19);
+        topics.put("Mythology", 20);
+        topics.put("Sports", 21);
+        topics.put("Geography", 22);
+        topics.put("History", 23);
+        topics.put("Politics",24);
+        topics.put("Art",25);
+        topics.put("Celebrities",26);
+        topics.put("Vehicles",27);
+        topics.put("Entertainment: Comics",28);
+        topics.put("Science: Gadgets",29);
+        topics.put("Entertainment: Japanese Anime & Manga",30);
+        topics.put("Entertainment: Cartoon & Animations",31);
+        pickExisting.getItems().addAll(topics.keySet());
+        pickExisting.setPromptText("Select an Existing Topic");
 
         subjectBox.setOnAction(e -> {
             if ("Custom".equals(subjectBox.getValue())) {
@@ -133,7 +176,7 @@ public class CreateYourOwnQuizController {
         backHome.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.LOGIN)
         );
-        VBox layout = new VBox(10, title, subjectBox, customSubject, multipleAnswers, questionField, row1, row2, row3, row4, addQuestion, finish, backHome, status);
+        VBox layout = new VBox(10, title,pickExisting, subjectBox, customSubject, multipleAnswers, questionField, row1, row2, row3, row4, addQuestion, finish, backHome, status);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
         return new Scene(layout, 450, 600);
