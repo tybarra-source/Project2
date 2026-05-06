@@ -11,8 +11,9 @@ public class SceneFactory {
             case HOME -> new HomeController().buildScene();
             case TAKE_QUIZ -> new TakeQuizController().buildScene(Session.currentQuizId);
             case FINISH -> new FinishController().buildScene(Session.finalScore, Session.totalQuestions);
+            case ADMIN_RESULTS -> new AdminResultsController().buildScene();
+            case USER_RESULTS -> new UserResultsController().buildScene();
             case ADMIN_EDIT -> new AdminEditQuizController().buildScene(Session.currentQuizId);
-
         };
     }
 }
