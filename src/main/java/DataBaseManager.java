@@ -37,6 +37,7 @@ public class DataBaseManager {
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL
+                isAdmin BOOLEAN NOT NULL
             );
         """;
         String quizzesTable = """
@@ -45,6 +46,7 @@ public class DataBaseManager {
                 user_id INTEGER NOT NULL,
                 quiz_title TEXT NOT NULL,
                 subject TEXT,
+                scored BOOLEAN NOT NULL,
                 FOREIGN KEY (user_id) REFERENCES users(user_id)
             );
         """;
