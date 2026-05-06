@@ -97,7 +97,7 @@ public class DataBaseManager {
         return -1;
     }
     public void addUser(String username, String password) {
-        String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
+        String sql = "INSERT INTO users(username, password, isAdmin) VALUES(?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
