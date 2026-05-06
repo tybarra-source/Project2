@@ -16,7 +16,7 @@ public class TriviaResponse {
     }
 
 
-    class TriviaQuestions{
+    static class TriviaQuestions{
         private String category;
         private String difficulty;
         private String question;
