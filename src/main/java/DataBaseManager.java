@@ -133,6 +133,54 @@ public class DataBaseManager {
         return false;
     }
 
+    // made a method to actually show the score results for the quizzes a user takes
+    // used the same format as the other methods here and in class slides
+    public int getScore(int userId, int quizId) {
+        String sql = "SELECT score FROM scores WHERE user_id = ? AND quiz_id = ?";
+        try(PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, quizId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("score");
+                }
+            }
+        } catch(SQLException e) {
+            System.err.println("getScore failed: " + e.getMessage());
+        }
+        return -1;
+    }
+    // need this method to get all usernames to display on the admin results page
+    public ArrayList<String> getAllUsernames() {
+        ArrayList<String> usernames = new ArrayList<>();
+        String sql = "SELECT username FROM users";
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    usernames.add(rs.getString("username"));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("getAllUsernames failed: " + e.getMessage());
+        }
+        return usernames;
+    }
+
+    public boolean isAdmin(int userId) {
+        String sql = "SELECT isAdmin FROM users WHERE user_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("isAdmin");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("isAdmin failed: " + e.getMessage());
+        }
+        return false;
+    }
+
     //adds the quiz
     public int addQuiz(int userId, String quizTitle, String subject, boolean scored) {
         String sql = "INSERT INTO quizzes(user_id, quiz_title, subject, scored) VALUES(?, ?, ?, ?)";

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 public class HomeController {
     private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
-        System.out.println("USER ID: " + Session.currentUserId);
         Label welcome = new Label("Welcome");
         VBox layout = new VBox(12);
         layout.setAlignment(Pos.CENTER);
@@ -24,24 +23,21 @@ public class HomeController {
             });
             layout.getChildren().add(quizButton);
         }
-        System.out.println("QUIZZES SIZE: " + quizzes.size());
+
         Button newQuiz = new Button("Create New Quiz");
         newQuiz.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
         );
-        Button logoutBtn = new Button("Log Out");
-        logoutBtn.setOnAction(e -> {
-            Session.currentUserId = -1;
-            Session.currentUsername = null;
-            Session.currentQuizId = -1;
-            Session.quizIndex = 0;
-            Session.finalScore = 0;
-            Session.totalQuestions = 0;
-            SceneManager.getInstance().navigateFresh(SceneType.LOGIN);
-        });
-        layout.getChildren().addAll(newQuiz, logoutBtn);
+        layout.getChildren().add(newQuiz);
+        Button resultsBtn = new Button("My Results");
+        resultsBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.USER_RESULTS));
+        layout.getChildren().add(resultsBtn);
+        if (db.isAdmin(Session.currentUserId)) {
+            Button adminResultsBtn = new Button("View Student Results");
+            adminResultsBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.ADMIN_RESULTS));
+            layout.getChildren().add(adminResultsBtn);
+        }
         return new
                 Scene(layout, 500, 500);
-
     }
 }
