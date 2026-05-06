@@ -33,7 +33,7 @@ public class AdminResultsController {
             if (selectedUsername == null) return;
 
             int userId = db.getUserId(selectedUsername);
-            ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(userId);
+            ArrayList<DataBaseManager.Quiz> quizzes = db.getQuizzesUserTook(userId);
 
             // showing the avg score the student has
             int total = 0;
@@ -87,7 +87,7 @@ public class AdminResultsController {
             resultsBox.getChildren().setAll(avgLabel, tableWrapper);
         });
             Button backBtn = new Button("Back to Home");
-            backBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.HOME));
+        backBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.ADMIN_HOME));
 
             VBox layout = new VBox(25, welcome, studentDropdown, resultsBox, backBtn);
             layout.setAlignment(Pos.CENTER);

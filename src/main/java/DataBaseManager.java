@@ -133,6 +133,29 @@ public class DataBaseManager {
         return false;
     }
 
+    // need to get ALL the quizzes a user took, including ones they didnt make
+    public ArrayList<Quiz> getQuizzesUserTook(int userId) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String sql = "SELECT q.quiz_id, q.quiz_title, q.subject, q.scored FROM quizzes q " +
+                "INNER JOIN scores s ON q.quiz_id = s.quiz_id WHERE s.user_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    quizzes.add(new Quiz(
+                            rs.getInt("quiz_id"),
+                            rs.getString("quiz_title"),
+                            rs.getString("subject"),
+                            rs.getBoolean("scored")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("getQuizzesUserTook failed: " + e.getMessage());
+        }
+        return quizzes;
+    }
+
     // made a method to actually show the score results for the quizzes a user takes
     // used the same format as the other methods here and in class slides
     public int getScore(int userId, int quizId) {
