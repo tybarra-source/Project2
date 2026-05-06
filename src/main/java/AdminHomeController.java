@@ -5,34 +5,30 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+
 public class AdminHomeController {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
         Label welcome = new Label("Welcome Admin");
-        Button editQ1 = new Button("Edit Quiz 1");
-        Button editQ2 = new Button("Edit Quiz 2");
-        Button editQ3 = new Button("Edit Quiz 3");
         Button newQuiz = new Button("Create New Quiz");
+        ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(Session.currentUserId);
         Label result = new Label();
         VBox layout = new VBox(12);
-        layout.getChildren().addAll(welcome, editQ1, editQ2, editQ3, newQuiz, result);
+        layout.getChildren().addAll(welcome, newQuiz, result);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
-
-
-        //Create method getscene in welcome admin
-        editQ1.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-        editQ2.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
-        editQ3.setOnAction(e ->{
-            result.setText("Goes to the edit mode on that quiz");
-        });
         newQuiz.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
         );
-
+        for (DataBaseManager.Quiz quiz : quizzes) {
+            Button edit = new Button("Edit Quiz: " + quiz.getTitle());
+            edit.setOnAction(e -> {
+                Session.currentQuizId = quiz.getQuizId();
+                SceneManager.getInstance().navigateTo(SceneType.ADMIN_EDIT);
+            });
+            layout.getChildren().add(edit);
+        }
         return new Scene(layout, 400, 300);
 
     }
