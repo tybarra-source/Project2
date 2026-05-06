@@ -14,8 +14,9 @@ public class AdminHomeController {
         Button newQuiz = new Button("Create New Quiz");
         ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(Session.currentUserId);
         Label result = new Label();
+        Button logoutBtn = new Button("Log Out");
         VBox layout = new VBox(12);
-        layout.getChildren().addAll(welcome, newQuiz, result);
+        layout.getChildren().addAll(welcome, newQuiz, result, logoutBtn);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
         newQuiz.setOnAction(e ->
@@ -29,9 +30,15 @@ public class AdminHomeController {
             });
             layout.getChildren().add(edit);
         }
-        Button adminResultsBtn = new Button("View Student Results");
-        adminResultsBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.ADMIN_RESULTS));
-        layout.getChildren().add(adminResultsBtn);
+        logoutBtn.setOnAction(e -> {
+            Session.currentUserId = -1;
+            Session.currentUsername = null;
+            Session.currentQuizId = -1;
+            Session.quizIndex = 0;
+            Session.finalScore = 0;
+            Session.totalQuestions = 0;
+            SceneManager.getInstance().navigateFresh(SceneType.LOGIN);
+        });
         return new Scene(layout, 400, 300);
 
     }
