@@ -2,19 +2,21 @@ import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class CreateFromExistingQuizController {
 
-
+    private final DataBaseManager db = DataBaseManager.getInstance();
     public Scene buildScene(){
         Label title = new Label("Create from Existing Quiz");
 
@@ -59,7 +61,12 @@ public class CreateFromExistingQuizController {
         loadingLabel.setVisible(false);
         loadingLabel.setManaged(false);
 
+
+
         Button submit = new Button("Create Quiz");
+        VBox layout = new VBox(15, title, pickExisting,numOfQuestions, errorLabel, loadingLabel, submit);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(20));
 
         submit.setDisable(true);
 
@@ -126,6 +133,8 @@ public class CreateFromExistingQuizController {
                         loadingLabel.setManaged(false);
 
                         List<TriviaResponse.TriviaQuestions> apiQuestions = task.getValue();
+                        ArrayList<Question> convertedQuestions = new ArrayList<>();
+
                         for(TriviaResponse.TriviaQuestions apiQ: apiQuestions) {
                             ArrayList<String> answers = new ArrayList<>(apiQ.getIncorrectAnswers());
                             answers.add(apiQ.getCorrectAnswer());
@@ -133,11 +142,73 @@ public class CreateFromExistingQuizController {
                             ArrayList<Integer> correctIndexes = new ArrayList<>();
                             correctIndexes.add(answers.size()-1);
 
-                            Question q = new Question(apiQ.getQuestion(), answers, correctIndexes, selectedTopic, false);
-                            CreateYourOwnQuizController.questions.add(q);
+                            convertedQuestions.add(new Question(apiQ.getQuestion(),answers,correctIndexes,selectedTopic,false));
                         }
-                        SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ);
 
+                        Label reviewQuiz = new Label("Review Questions");
+                        Label uncheck = new Label("Uncheck any questions you don't want");
+                        Label status = new Label();
+
+                        status.setVisible(false);
+                        status.setManaged(false);
+
+                        VBox questionList = new VBox(10);
+                        ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+
+                        for(Question q: convertedQuestions){
+                            CheckBox cb = new CheckBox(q.question);
+                            cb.setSelected(true);
+                            cb.setWrapText(true);
+                            checkBoxes.add(cb);
+                            questionList.getChildren().add(cb);
+
+                        }
+                        ScrollPane sp = new ScrollPane(questionList);
+                        sp.setFitToWidth(true);
+                        sp.setPrefHeight(300);
+
+                        Button saveButton = new Button("Save Quiz");
+                        Button homeButton = new Button("Go Home");
+
+                        saveButton.setOnAction(ev ->{
+                            ArrayList<Question> kept = new ArrayList<>();
+                            for(int i = 0; i<checkBoxes.size(); i++){
+                                if(checkBoxes.get(i).isSelected()){
+                                    kept.add(convertedQuestions.get(i));
+                                }
+                            }
+
+                            if(kept.isEmpty()){
+                                status.setText("Keep at least one question");
+                                status.setVisible(true);
+                                status.setManaged(true);
+                                return;
+                            }
+                            int quizId = db.addQuiz(Session.currentQuizId, selectedTopic + " Quiz", selectedTopic);
+                            if(quizId == -1){
+                                status.setText("Failed to save quiz");
+                                status.setVisible(true);
+                                status.setManaged(true);
+                                return;
+                            }
+                            for(Question q : kept){
+                                String correctAnswer = q.answers.get(q.correctIndexes.get(0));
+                                db.addQuestion(quizId, q.question, q.answers.get(0),q.answers.get(1),q.answers.get(2),q.answers.get(3), correctAnswer );
+
+                            }
+
+                            status.setText("Quiz saved with " + kept.size() + " questions.");
+                            status.setVisible(true);
+                            status.setManaged(true);
+                            saveButton.setDisable(true);
+                        });
+
+                        homeButton.setOnAction(eve ->{
+                                    SceneManager.getInstance().navigateTo(SceneType.HOME);
+                                }
+                                );
+
+                        layout.getChildren().setAll(reviewQuiz, uncheck, sp, status, saveButton, homeButton );
 
 
                     });
@@ -156,9 +227,7 @@ public class CreateFromExistingQuizController {
                     thread.start();
 
         });
-        VBox layout = new VBox(15, title, pickExisting,numOfQuestions, errorLabel, loadingLabel, submit);
-        layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(20));
+
         return new Scene(layout, 450, 600);
 
     }
