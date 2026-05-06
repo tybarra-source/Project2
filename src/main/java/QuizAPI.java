@@ -44,7 +44,7 @@ public class QuizAPI {
         }
 
     }
-//thats the whole inner class thing
+
     public List<TriviaResponse.TriviaQuestions> getQuestions(int amount, int category) throws IOException{
         String url = URL + "?amount=" + amount + "&category=" + category + "&type=multiple";
         String json = run(url);

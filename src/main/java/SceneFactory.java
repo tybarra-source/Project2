@@ -8,6 +8,7 @@ public class SceneFactory {
             case SIGNUP -> new SignUpController().buildScene();
             case CREATE_QUIZ -> new CreateYourOwnQuizController().buildScene();
             case ADMIN_HOME -> new AdminHomeController().buildScene();
+            case CREATE_FROM_EXISTING -> new CreateFromExistingQuizController().buildScene();
             case HOME -> new HomeController().buildScene();
         };
     }
