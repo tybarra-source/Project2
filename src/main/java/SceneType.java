@@ -6,5 +6,6 @@ public enum SceneType {
     ADMIN_HOME,
     HOME,
     TAKE_QUIZ,
-    FINISH;
+    FINISH,
+    ADMIN_EDIT;
 }

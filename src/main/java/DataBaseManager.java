@@ -36,7 +36,8 @@ public class DataBaseManager {
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL UNIQUE,
-                password TEXT NOT NULL
+                password TEXT NOT NULL,
+                isAdmin BOOLEAN NOT NULL
             );
         """;
         String quizzesTable = """
@@ -45,6 +46,7 @@ public class DataBaseManager {
                 user_id INTEGER NOT NULL,
                 quiz_title TEXT NOT NULL,
                 subject TEXT,
+                scored BOOLEAN NOT NULL,
                 FOREIGN KEY (user_id) REFERENCES users(user_id)
             );
         """;
@@ -84,49 +86,61 @@ public class DataBaseManager {
         String sql = "SELECT user_id FROM users WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("user_id");
-                }
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("user_id");
             }
         } catch (SQLException e) {
             System.err.println("getUserId failed: " + e.getMessage());
         }
         return -1;
     }
-    public void addUser(String username, String password) {
-        String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
+    public void addUser(String username, String password, boolean isAdmin) {
+        String sql = "INSERT INTO users(username, password, isAdmin) VALUES(?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
+            pstmt.setBoolean(3, isAdmin);
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             System.err.println("addUser failed: " + e.getMessage());
         }
     }
-
     //for log in. Ckecking username and password
     public boolean validateUser(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-        try (PreparedStatement prep = connection.prepareStatement(sql)) {
-            prep.setString(1, username);
-            prep.setString(2, password);
-            ResultSet rs = prep.executeQuery();
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
             return rs.next();
         } catch (SQLException e) {
             System.err.println("validateUser failed: " + e.getMessage());
             return false;
         }
     }
+    public boolean isAdmin(String username) {
+        String sql = "SELECT isAdmin FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1,  username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("isAdmin");
+            }
+        } catch (SQLException e) {
+            System.err.println("isAdmin failed: " + e.getMessage());
+        }
+        return false;
+    }
 
     //adds the quiz
-    public int addQuiz(int userId, String quizTitle, String subject) {
-        String sql = "INSERT INTO quizzes(user_id, quiz_title, subject) VALUES(?, ?, ?)";
+    public int addQuiz(int userId, String quizTitle, String subject, boolean scored) {
+        String sql = "INSERT INTO quizzes(user_id, quiz_title, subject, scored) VALUES(?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, userId);
             pstmt.setString(2, quizTitle);
             pstmt.setString(3, subject);
+            pstmt.setBoolean(4, scored);
             pstmt.executeUpdate();
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
@@ -163,25 +177,46 @@ public class DataBaseManager {
         }
     }
     public void saveScore(int userId, int quizId, int score) {
-        String sql = "INSERT INTO scores(user_id, quiz_id, score) VALUES(?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, userId);
-            pstmt.setInt(2, quizId);
-            pstmt.setInt(3, score);
-            pstmt.executeUpdate();
+        String insertScore = "INSERT INTO scores(user_id, quiz_id, score) VALUES(?, ?, ?)";
+        String updateQuiz = "UPDATE quizzes SET scored = ? WHERE quiz_id = ?";
+        try {
+            connection.setAutoCommit(false);
+            try (PreparedStatement scoreStmt = connection.prepareStatement(insertScore);
+                 PreparedStatement quizStmt = connection.prepareStatement(updateQuiz)) {
+                scoreStmt.setInt(1, userId);
+                scoreStmt.setInt(2, quizId);
+                scoreStmt.setInt(3, score);
+                scoreStmt.executeUpdate();
+                quizStmt.setBoolean(1, true);
+                quizStmt.setInt(2, quizId);
+                quizStmt.executeUpdate();
+                connection.commit();
+            }
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                System.err.println("Rollback failed: " + ex.getMessage());
+            }
             System.err.println("saveScore failed: " + e.getMessage());
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.err.println("AutoCommit reset failed: " + e.getMessage());
+            }
         }
     }
-
     public class Quiz {
         private int quizId;
         private String title;
         private String subject;
-        public Quiz(int quizId, String title, String subject) {
+        private boolean scored;
+        public Quiz(int quizId, String title, String subject, boolean scored) {
             this.quizId = quizId;
             this.title = title;
             this.subject = subject;
+            this.scored=scored;
         }
         public int getQuizId() {
             return quizId;
@@ -192,6 +227,7 @@ public class DataBaseManager {
         public String getSubject() {
             return subject;
         }
+        public boolean getIsScored(){return scored;}
     }
 
     public ArrayList<Quiz> getUserQuizzes(int userId) {
@@ -204,7 +240,8 @@ public class DataBaseManager {
                     quizzes.add(new Quiz(
                             rs.getInt("quiz_id"),
                             rs.getString("quiz_title"),
-                            rs.getString("subject")
+                            rs.getString("subject"),
+                            rs.getBoolean("scored")
                     ));
                 }
             }
@@ -235,19 +272,38 @@ public class DataBaseManager {
                             correctIndexes.add(i);
                         }
                     }
-                    questions.add(new Question(
-                            rs.getString("question_text"),
-                            answers,
-                            correctIndexes,
-                            "",
-                            false
-                    ));
+                    questions.add(new Question(rs.getInt("question_id"), rs.getString("question_text"), answers, correctIndexes, "", false));
                 }
             }
         } catch (SQLException e) {
             System.err.println("getQuestionsForQuiz failed: " + e.getMessage());
         }
         return questions;
+    }
+    public void updateQuestion(int questionId, String question, String a, String b, String c, String d, String correct) {
+        String sql = """
+        UPDATE questions
+        SET question_text = ?,
+            option_a = ?,
+            option_b = ?,
+            option_c = ?,
+            option_d = ?,
+            correct_answer = ?
+        WHERE question_id = ?
+    """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, question);
+            ps.setString(2, a);
+            ps.setString(3, b);
+            ps.setString(4, c);
+            ps.setString(5, d);
+            ps.setString(6, correct);
+            ps.setInt(7, questionId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("updateQuestion failed: " + e.getMessage());
+        }
     }
 
 }
