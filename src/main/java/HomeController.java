@@ -11,6 +11,7 @@ public class HomeController {
     private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
         Label welcome = new Label("Welcome");
+        Button logoutBtn = new Button("Log Out");
         VBox layout = new VBox(12);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
@@ -37,6 +38,16 @@ public class HomeController {
             adminResultsBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.ADMIN_RESULTS));
             layout.getChildren().add(adminResultsBtn);
         }
+        logoutBtn.setOnAction(e -> {
+            Session.currentUserId = -1;
+            Session.currentUsername = null;
+            Session.currentQuizId = -1;
+            Session.quizIndex = 0;
+            Session.finalScore = 0;
+            Session.totalQuestions = 0;
+            SceneManager.getInstance().navigateFresh(SceneType.LOGIN);
+        });
+        layout.getChildren().add(logoutBtn);
         return new
                 Scene(layout, 500, 500);
     }
