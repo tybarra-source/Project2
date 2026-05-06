@@ -16,8 +16,7 @@ public class HomeController {
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
         layout.getChildren().add(welcome);
-        ArrayList<DataBaseManager.Quiz> quizzes = db.getUserQuizzes(Session.currentUserId);
-        for (DataBaseManager.Quiz quiz : quizzes) {
+        ArrayList<DataBaseManager.Quiz> quizzes = db.getPublicQuizzes();        for (DataBaseManager.Quiz quiz : quizzes) {
             Button quizButton = new Button("Take: " + quiz.getTitle());
             quizButton.setOnAction(e -> {
                 Session.currentQuizId = quiz.getQuizId();

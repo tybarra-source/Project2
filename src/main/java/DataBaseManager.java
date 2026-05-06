@@ -306,4 +306,33 @@ public class DataBaseManager {
         }
     }
 
+    public ArrayList<Quiz> getPublicQuizzes() {
+
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+
+        String sql = """
+        SELECT q.*
+        FROM quizzes q
+        JOIN users u ON q.user_id = u.user_id
+        WHERE u.isAdmin = 1
+    """;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                quizzes.add(new Quiz(
+                        rs.getInt("quiz_id"),
+                        rs.getString("quiz_title"),
+                        rs.getString("subject"),
+                        rs.getBoolean("scored")
+                ));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("getPublicQuizzes failed: " + e.getMessage());
+        }
+
+        return quizzes;
+    }
 }

@@ -19,13 +19,8 @@ public class LoginController {
         password.setPromptText("Password");
         Button loginBtn = new Button("Log In");
         Button signUpBtn = new Button("Sign Up");
-        Button createYourOwnQuiz = new Button("Create your own quiz");
         signUpBtn.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.SIGNUP)
-        );
-        createYourOwnQuiz.setOnAction(e -> {
-                    SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ);
-                }
         );
         loginBtn.setOnAction(event -> {
             String username = userName.getText().trim();
@@ -57,7 +52,7 @@ public class LoginController {
                 SceneManager.getInstance().navigateTo(SceneType.HOME);
             }
         });
-        VBox layout = new VBox(10, title, userName, password, errorLabel, loginBtn, signUpBtn, createYourOwnQuiz);
+        VBox layout = new VBox(10, title, userName, password, errorLabel, loginBtn, signUpBtn);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
         return new Scene(layout, 400, 300);
