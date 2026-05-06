@@ -142,7 +142,7 @@ public class CreateFromExistingQuizController {
                             ArrayList<Integer> correctIndexes = new ArrayList<>();
                             correctIndexes.add(answers.size()-1);
 
-                            convertedQuestions.add(new Question(apiQ.getQuestion(),answers,correctIndexes,selectedTopic,false));
+                            convertedQuestions.add(new Question(-1,apiQ.getQuestion(),answers,correctIndexes,selectedTopic,false));
                         }
 
                         Label reviewQuiz = new Label("Review Questions");
@@ -184,17 +184,23 @@ public class CreateFromExistingQuizController {
                                 status.setManaged(true);
                                 return;
                             }
-                            int quizId = db.addQuiz(Session.currentQuizId, selectedTopic + " Quiz", selectedTopic);
+                            System.out.println("Current user id: " + Session.currentUserId);
+                            System.out.println("Selected topic: " + selectedTopic);
+                            //add false after selectedTopic
+                            int quizId = db.addQuiz(Session.currentUserId, selectedTopic + " Quiz", selectedTopic,false);
+
                             if(quizId == -1){
                                 status.setText("Failed to save quiz");
                                 status.setVisible(true);
                                 status.setManaged(true);
                                 return;
                             }
-                            for(Question q : kept){
+                            for (Question q : kept) {
                                 String correctAnswer = q.answers.get(q.correctIndexes.get(0));
-                                db.addQuestion(quizId, q.question, q.answers.get(0),q.answers.get(1),q.answers.get(2),q.answers.get(3), correctAnswer );
-
+                                db.addQuestion(quizId, q.question,
+                                        q.answers.get(0), q.answers.get(1),
+                                        q.answers.get(2), q.answers.get(3),
+                                        correctAnswer);
                             }
 
                             status.setText("Quiz saved with " + kept.size() + " questions.");
@@ -204,7 +210,7 @@ public class CreateFromExistingQuizController {
                         });
 
                         homeButton.setOnAction(eve ->{
-                                    SceneManager.getInstance().navigateTo(SceneType.HOME);
+                                    SceneManager.getInstance().navigateFresh(SceneType.HOME);
                                 }
                                 );
 

@@ -5,8 +5,4 @@ public class Session {
     public static int finalScore;
     public static int totalQuestions;
     public static int quizIndex;
-
-
-
-
 }

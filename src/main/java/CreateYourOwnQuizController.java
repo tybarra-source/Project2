@@ -14,7 +14,7 @@ public class CreateYourOwnQuizController {
     private final DataBaseManager        db        = DataBaseManager.getInstance();    public Scene buildScene() {
         Label title = new Label("Create Your Own Quiz");
         ComboBox<String> subjectBox = new ComboBox<>();
-        subjectBox.getItems().addAll("Math", "Physics", "Literature", "Music", "Custom");
+        subjectBox.getItems().addAll("Math", "Physics", "Literature", "Music", "Custom", "From Existing Quiz");
         TextField customSubject = new TextField();
         customSubject.setPromptText("Or custom subject");
         customSubject.setVisible(false);
@@ -24,6 +24,8 @@ public class CreateYourOwnQuizController {
             if ("Custom".equals(subjectBox.getValue())) {
                 customSubject.setVisible(true);
                 customSubject.setManaged(true);
+            }else if("From Existing Quiz".equals(subjectBox.getValue())){
+                SceneManager.getInstance().navigateTo(SceneType.CREATE_FROM_EXISTING);
             } else {
                 customSubject.setVisible(false);
                 customSubject.setManaged(false);
@@ -56,6 +58,7 @@ public class CreateYourOwnQuizController {
         Button finish = new Button("Finish Quiz");
         Button backHome = new Button("Back");
 
+
         addQuestion.setOnAction(e -> {
             String subject = subjectBox.getValue();
             if (subject == null || subject.isEmpty()) {
@@ -64,6 +67,7 @@ public class CreateYourOwnQuizController {
             if ("Custom".equals(subject)) {
                 subject = customSubject.getText();
             }
+
             if (subject == null || subject.isEmpty()) {
                 status.setText("Select or enter a subject");
                 return;
@@ -72,6 +76,7 @@ public class CreateYourOwnQuizController {
                 status.setText("Enter a question");
                 return;
             }
+
 
             ArrayList<String> answers = new ArrayList<>();
             answers.add(a1.getText());
