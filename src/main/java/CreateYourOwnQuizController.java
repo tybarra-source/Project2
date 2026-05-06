@@ -24,7 +24,7 @@ public class CreateYourOwnQuizController {
             if ("Custom".equals(subjectBox.getValue())) {
                 customSubject.setVisible(true);
                 customSubject.setManaged(true);
-            }else if("From Existing Quiz".equals(subjectBox.getValue())){
+            }else if("From Existing Quiz".equals(subjectBox.getValue())){ //this wasn't showing up in main, lets hope it does now
                 SceneManager.getInstance().navigateTo(SceneType.CREATE_FROM_EXISTING);
             } else {
                 customSubject.setVisible(false);
