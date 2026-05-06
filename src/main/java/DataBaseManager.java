@@ -1,9 +1,11 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DataBaseManager {
 
     private static final String DB_URL = "jdbc:sqlite:app.db";
     private Connection connection;
+    private static DataBaseManager instance;
     public DataBaseManager() {
         try {
             connection = DriverManager.getConnection(DB_URL);
@@ -13,6 +15,12 @@ public class DataBaseManager {
         } catch (SQLException e) {
             System.err.println("Connection failed: " + e.getMessage());
         }
+    }
+    public static DataBaseManager getInstance(){
+        if(instance==null) {
+            instance = new DataBaseManager();
+        }
+        return instance;
     }
     public void close() {
         try {
@@ -165,4 +173,81 @@ public class DataBaseManager {
             System.err.println("saveScore failed: " + e.getMessage());
         }
     }
+
+    public class Quiz {
+        private int quizId;
+        private String title;
+        private String subject;
+        public Quiz(int quizId, String title, String subject) {
+            this.quizId = quizId;
+            this.title = title;
+            this.subject = subject;
+        }
+        public int getQuizId() {
+            return quizId;
+        }
+        public String getTitle() {
+            return title;
+        }
+        public String getSubject() {
+            return subject;
+        }
+    }
+
+    public ArrayList<Quiz> getUserQuizzes(int userId) {
+        ArrayList<Quiz> quizzes = new ArrayList<>();
+        String sql = "SELECT * FROM quizzes WHERE user_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    quizzes.add(new Quiz(
+                            rs.getInt("quiz_id"),
+                            rs.getString("quiz_title"),
+                            rs.getString("subject")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("getUserQuizzes failed: " + e.getMessage());
+        }
+        return quizzes;
+    }
+    public ArrayList<Question> getQuestionsForQuiz(int quizId) {
+        ArrayList<Question> questions = new ArrayList<>();
+        String sql = "SELECT * FROM questions WHERE quiz_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, quizId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    ArrayList<String> answers = new ArrayList<>();
+                    answers.add(rs.getString("option_a"));
+                    answers.add(rs.getString("option_b"));
+                    answers.add(rs.getString("option_c"));
+                    answers.add(rs.getString("option_d"));
+
+                    ArrayList<Integer> correctIndexes = new ArrayList<>();
+
+                    String correct = rs.getString("correct_answer");
+
+                    for (int i = 0; i < answers.size(); i++) {
+                        if (answers.get(i).equals(correct)) {
+                            correctIndexes.add(i);
+                        }
+                    }
+                    questions.add(new Question(
+                            rs.getString("question_text"),
+                            answers,
+                            correctIndexes,
+                            "",
+                            false
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("getQuestionsForQuiz failed: " + e.getMessage());
+        }
+        return questions;
+    }
+
 }

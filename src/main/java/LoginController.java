@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 public class LoginController {
+    private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
         Label title = new Label("Login");
         Label errorLabel = new Label("");
@@ -35,7 +36,6 @@ public class LoginController {
                 errorLabel.setVisible(true);
                 errorLabel.setText("Please complete all fields.");
             } else {
-                DataBaseManager db = new DataBaseManager();
                 boolean valid = db.validateUser(userName.getText(), password.getText());
                 if (valid) {
                     errorLabel.setVisible(false);

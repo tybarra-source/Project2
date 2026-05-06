@@ -29,16 +29,9 @@ public class AdminHomeController {
         editQ3.setOnAction(e ->{
             result.setText("Goes to the edit mode on that quiz");
         });
-
-        newQuiz.setOnAction(e ->{
-            result.setText("Creates new quiz in edit mode");
-        });
-        /**
-         *
-         * FIGURE OUT HOW TO LINK TO OTHER SCENES
-         * stage.setScene(SignUpScene.getScene(stage)); THIS IS TO LINK TO NEW SCENES, edit as u please
-         */
-
+        newQuiz.setOnAction(e ->
+                SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
+        );
 
         return new Scene(layout, 400, 300);
 
