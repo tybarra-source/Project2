@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class HomeController {
     private final DataBaseManager        db        = DataBaseManager.getInstance();
     public Scene buildScene() {
+        System.out.println("USER ID: " + Session.currentUserId);
         Label welcome = new Label("Welcome");
         VBox layout = new VBox(12);
         layout.setAlignment(Pos.CENTER);
@@ -24,13 +25,24 @@ public class HomeController {
             });
             layout.getChildren().add(quizButton);
         }
-
+        System.out.println("QUIZZES SIZE: " + quizzes.size());
         Button newQuiz = new Button("Create New Quiz");
         newQuiz.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.CREATE_QUIZ)
         );
-        layout.getChildren().add(newQuiz);
+        Button logoutBtn = new Button("Log Out");
+        logoutBtn.setOnAction(e -> {
+            Session.currentUserId = -1;
+            Session.currentUsername = null;
+            Session.currentQuizId = -1;
+            Session.quizIndex = 0;
+            Session.finalScore = 0;
+            Session.totalQuestions = 0;
+            SceneManager.getInstance().navigateFresh(SceneType.LOGIN);
+        });
+        layout.getChildren().addAll(newQuiz, logoutBtn);
         return new
                 Scene(layout, 500, 500);
+
     }
 }

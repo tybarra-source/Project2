@@ -15,13 +15,11 @@ public class SceneManager {
     private SceneManager(Stage stage) {
         this.stage = stage;
     }
-
     public static void init(Stage stage) {
         if (instance == null) {
             instance = new SceneManager(stage);
         }
     }
-
     public static SceneManager getInstance() {
         if (instance == null){
             throw new IllegalStateException
@@ -29,14 +27,14 @@ public class SceneManager {
         }
         return instance;
     }
-
-    /** Navigate to a scene, building it once and caching it for subsequent visits. */
     public void navigateTo(SceneType type) {
-        Scene scene = cache.computeIfAbsent(type,t -> SceneFactory.create(t));
+        if (type == SceneType.ADMIN_EDIT) {
+            stage.setScene(SceneFactory.create(type));
+            return;
+        }
+        Scene scene = cache.computeIfAbsent(type, t -> SceneFactory.create(t));
         stage.setScene(scene);
     }
-
-    /** Always rebuild the scene (use for screens that must show fresh data). */
     public void navigateFresh(SceneType type) {
         Scene scene = SceneFactory.create(type);
         cache.put(type, scene);

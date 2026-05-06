@@ -10,10 +10,8 @@ public class FinishController {
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
-
         Label finished = new Label("Quiz Finished!");
         Label finalScore = new Label("Score: " + score + " / " + total);
-
         Button homeButton = new Button("Back Home");
         homeButton.setOnAction(e ->
                 SceneManager.getInstance().navigateTo(SceneType.HOME)

@@ -67,7 +67,6 @@ public class TakeQuizController {
             }
             if (Session.quizIndex == questions.size() - 1) {
                 db.saveScore(Session.currentUserId, quizId, Session.finalScore);
-
                 Session.totalQuestions = questions.size();
                 SceneManager.getInstance().navigateFresh(SceneType.FINISH);
                 return;

@@ -48,8 +48,9 @@ public class SignUpController {
                 errorLabel.setText("Password must be at least 8 characters!");
             } else {
                 errorLabel.setVisible(false);
-                db.addUser(userName.getText(), password.getText());
-                if (adminBtn.isSelected()) {
+                boolean isAdmin = adminBtn.isSelected();
+                db.addUser(userName.getText(), password.getText(), isAdmin);
+                if (isAdmin) {
                     SceneManager.getInstance().navigateTo(SceneType.ADMIN_HOME);
                 } else {
                     SceneManager.getInstance().navigateTo(SceneType.LOGIN);
