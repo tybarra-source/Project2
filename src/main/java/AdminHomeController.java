@@ -39,6 +39,9 @@ public class AdminHomeController {
             Session.totalQuestions = 0;
             SceneManager.getInstance().navigateFresh(SceneType.LOGIN);
         });
+        Button adminResultsBtn = new Button("View Student Results");
+        adminResultsBtn.setOnAction(e -> SceneManager.getInstance().navigateTo(SceneType.ADMIN_RESULTS));
+        layout.getChildren().add(adminResultsBtn);
         return new Scene(layout, 400, 300);
 
     }
