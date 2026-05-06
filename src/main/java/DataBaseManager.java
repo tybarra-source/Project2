@@ -377,7 +377,7 @@ public class DataBaseManager {
         }
     }
 
-    public ArrayList<Quiz> getPublicQuizzes() {
+    public ArrayList<Quiz> getPublicQuizzes(int currentUserId) {
 
         ArrayList<Quiz> quizzes = new ArrayList<>();
 
@@ -385,19 +385,22 @@ public class DataBaseManager {
         SELECT q.*
         FROM quizzes q
         JOIN users u ON q.user_id = u.user_id
-        WHERE u.isAdmin = 1
+        WHERE u.isAdmin = 1 OR q.user_id = ?
     """;
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-            while (rs.next()) {
-                quizzes.add(new Quiz(
-                        rs.getInt("quiz_id"),
-                        rs.getString("quiz_title"),
-                        rs.getString("subject"),
-                        rs.getBoolean("scored")
-                ));
+            pstmt.setInt(1, currentUserId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    quizzes.add(new Quiz(
+                            rs.getInt("quiz_id"),
+                            rs.getString("quiz_title"),
+                            rs.getString("subject"),
+                            rs.getBoolean("scored")
+                    ));
+                }
             }
 
         } catch (SQLException e) {
